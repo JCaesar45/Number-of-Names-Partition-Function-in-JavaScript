@@ -1,0 +1,36 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Partition Function Explorer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Partition Number Explorer</h1>
+    <p>Discover the number of ways to partition an integer — with elegance and interactivity.</p>
+  </header>
+
+  <section class="input-section">
+    <div class="input-group">
+      <label for="numberInput">Enter a number (n):</label>
+      <input type="number" id="numberInput" min="1" max="200" value="10" />
+    </div>
+    <button id="computeBtn">Calculate</button>
+  </section>
+
+  <section class="result-section">
+    <h2>Result</h2>
+    <div class="result-display">
+      <p id="resultText">Enter a number and click "Calculate".</p>
+    </div>
+    <canvas id="animationCanvas"></canvas>
+  </section>
+
+  <footer>
+    <p>Created with passion by Jordan Leturgez. Inspired by the beauty of number theory.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
