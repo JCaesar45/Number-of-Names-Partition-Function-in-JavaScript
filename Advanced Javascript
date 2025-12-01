@@ -1,0 +1,112 @@
+// Utility: Calculate partition number using Euler's pentagonal theorem
+function numberOfNames(n) {
+  const partitions = [1]; // P(0) = 1
+  for (let i = 1; i <= n; i++) {
+    let sum = 0;
+    for (let k = 1; ; k++) {
+      const pent1 = k * (3 * k - 1) / 2;
+      const pent2 = k * (3 * k + 1) / 2;
+
+      if (pent1 > i && pent2 > i) break;
+
+      const sign = (k % 2 === 0) ? -1 : 1;
+
+      if (pent1 <= i) {
+        sum += sign * partitions[i - pent1];
+      }
+      if (pent2 <= i) {
+        sum += sign * partitions[i - pent2];
+      }
+    }
+    partitions[i] = sum;
+  }
+  return partitions[n];
+}
+
+// DOM elements
+const numberInput = document.getElementById('numberInput');
+const computeBtn = document.getElementById('computeBtn');
+const resultText = document.getElementById('resultText');
+const canvas = document.getElementById('animationCanvas');
+const ctx = canvas.getContext('2d');
+
+// Resize canvas responsively
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Animation variables
+let particles = [];
+
+class Particle {
+  constructor(x, y, size, color, speedX, speedY) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.color = color;
+    this.speedX = speedX;
+    this.speedY = speedY;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    // Bounce edges
+    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+function initParticles(count) {
+  particles = [];
+  for (let i = 0; i < count; i++) {
+    const size = Math.random() * 3 + 1;
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+    const speedX = (Math.random() - 0.5) * 2;
+    const speedY = (Math.random() - 0.5) * 2;
+    particles.push(new Particle(x, y, size, color, speedX, speedY));
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const p of particles) {
+    p.update();
+    p.draw();
+  }
+  requestAnimationFrame(animate);
+}
+
+// Initialize particles
+initParticles(50);
+animate();
+
+// Event: Calculate button
+computeBtn.addEventListener('click', () => {
+  const n = parseInt(numberInput.value);
+  if (isNaN(n) || n < 1) {
+    resultText.textContent = 'Please enter a valid number greater than 0.';
+    return;
+  }
+
+  resultText.textContent = 'Calculating...';
+
+  // Simulate a delay for effect
+  setTimeout(() => {
+    const result = numberOfNames(n);
+    resultText.innerHTML = `<strong>${n}</strong> can be partitioned in <strong>${result}</strong> ways.`;
+    // Animate particles based on result
+    initParticles(20 + Math.min(result / 1000, 200));
+  }, 300);
+});
