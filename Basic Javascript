@@ -1,0 +1,25 @@
+function numberOfNames(n) {
+    // Array to store the partition numbers up to n
+    const partitions = [1]; // P(0) = 1
+    for (let i = 1; i <= n; i++) {
+        let sum = 0;
+        for (let k = 1; ; k++) {
+            // Generalized pentagonal numbers
+            const pent1 = k * (3 * k - 1) / 2;
+            const pent2 = k * (3 * k + 1) / 2;
+
+            if (pent1 > i && pent2 > i) break;
+
+            const sign = (k % 2 === 0) ? -1 : 1;
+
+            if (pent1 <= i) {
+                sum += sign * partitions[i - pent1];
+            }
+            if (pent2 <= i) {
+                sum += sign * partitions[i - pent2];
+            }
+        }
+        partitions[i] = sum;
+    }
+    return partitions[n];
+}
